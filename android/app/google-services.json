@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "670445737708",
+    "project_id": "devlomatix-c999c",
+    "storage_bucket": "devlomatix-c999c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670445737708:android:d650a808773c80d243b7c9",
+        "android_client_info": {
+          "package_name": "com.devlomatix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5GGMQ7H6Enfs8BP72nFbUxjmlMAwKGWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
