@@ -9,7 +9,8 @@ export const globalcolors ={
     gray: '#666666',
     grayLight: '#ccc',
     black: '#0a0a0a',
-    darkMode:'#191970 '
+    darkMode:'#191970',
+    primaryColor:'#090B34' 
   };
 
   

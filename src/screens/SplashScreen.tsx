@@ -11,12 +11,14 @@ import auth from '@react-native-firebase/auth';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList, 'SplashScreen'>;
 
-const SplashScreen = ({navigation}:SplashProps) => {
-  
+const SplashScreen = ({ navigation }: SplashProps) => {
+
 
   useEffect(() => {
-    firebase();
 
+    setTimeout(() => {
+      firebase();
+    }, 2000);
   }, [])
 
   const firebase = () => {
@@ -26,7 +28,7 @@ const SplashScreen = ({navigation}:SplashProps) => {
         consolelog('No user found : move to Login screen')
         navigation.replace('LoginScreen')
       } else {
-        //navigation.replace('MainScreen')
+        navigation.replace('MainScreen')
         consolelog('User found : move to Main screen')
       }
     })
@@ -34,7 +36,7 @@ const SplashScreen = ({navigation}:SplashProps) => {
   return (
     <View style={globalStyles.root}>
       <StatusBar hidden={true} />
-      <ImageBackground source={strings.pageBackground} resizeMode="cover" style={globalStyles.background_image_container} imageStyle={styles.image}>
+      <ImageBackground source={strings.splashBackgroundImage} resizeMode="cover" style={[globalStyles.background_image_container,styles.background_image_container]} imageStyle={styles.image}>
         <Image source={strings.appLogoPath} style={styles.logo} />
       </ImageBackground>
 
@@ -45,6 +47,7 @@ const SplashScreen = ({navigation}:SplashProps) => {
 export default SplashScreen
 
 const styles = StyleSheet.create({
+  background_image_container:{justifyContent: 'center', alignItems: 'center'},
   image: { opacity: 0.7, backgroundColor: globalcolors.black },
   logo: { height: '5%', resizeMode: 'contain' }
 })
