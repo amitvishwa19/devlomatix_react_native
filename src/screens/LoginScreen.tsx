@@ -62,11 +62,11 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
       
 
       // Create a Google credential with the token
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      console.log(googleCredential)
+      //const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      //console.log(googleCredential)
 
       // Sign-in the user with the credential
-      return auth().signInWithCredential(googleCredential);
+      //const firebaseUserCredential = await auth().currentUser.linkWithCredential(googleCredential);
     } catch (error) {
       consolelog('Error while google signin :' + error)
     }
