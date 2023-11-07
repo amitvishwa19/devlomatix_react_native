@@ -1,25 +1,20 @@
-import { Button, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ToastAndroid } from 'react-native'
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import CheckBox from '@react-native-community/checkbox';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../../App';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../../utils/colors';
-import { strings } from '../../utils/strings';
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import CustomButton from '../../components/CustomButton';
-import { size } from '../../utils/size';
-import auth from '@react-native-firebase/auth';
-import GlobalStyles from '../../utils/styles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import firestore from '@react-native-firebase/firestore';
-import { consolelog } from '../../functions/consoleLog';
+import { RootStackParamList } from '../../App';
 import messaging from '@react-native-firebase/messaging';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { globalcolors } from '../utils/colors';
+import { strings } from '../utils/strings';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { globalStyles } from '../utils/styles';
+import CustomButton from '../components/CustomButton';
 
-type RegisterScreenProp = StackNavigationProp<RootStackParamList, 'Register'>;
+type RegisterScreenProp = NativeStackScreenProps<RootStackParamList, 'RegisterScreen'>;
+const RegisterScreen = ({navigation}:RegisterScreenProp) => {
 
-const Register = () => {
-  const navigation = useNavigation<RegisterScreenProp>();
+ 
   const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState('');
@@ -43,7 +38,7 @@ const Register = () => {
             auth().signOut().then(() => {
               auth().currentUser?.sendEmailVerification()
               ToastAndroid.showWithGravity('Account created successfully', ToastAndroid.LONG, ToastAndroid.BOTTOM);
-              navigation.replace('Login')
+              navigation.replace('LoginScreen')
             })
           });
       })
@@ -75,14 +70,14 @@ const Register = () => {
               fontSize: 22,
               fontWeight: 'bold',
               marginVertical: 12,
-              color: colors.black
+              color: globalcolors.black
             }}>
               Create Account
             </Text>
 
             <Text style={{
               fontSize: 16,
-              color: colors.black
+              color: globalcolors.black
             }}>Let's Create your account with {strings.appName}</Text>
           </View>
 
@@ -93,7 +88,7 @@ const Register = () => {
             <View style={{
               width: "100%",
               height: 48,
-              borderColor: colors.black,
+              borderColor: globalcolors.black,
               borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
@@ -102,7 +97,7 @@ const Register = () => {
             }}>
               <TextInput
                 placeholder='Enter your email address'
-                placeholderTextColor={colors.black}
+                placeholderTextColor={globalcolors.black}
                 keyboardType='email-address'
                 value={email}
                 onChangeText={txt => setEmail(txt)}
@@ -122,7 +117,7 @@ const Register = () => {
             <View style={{
               width: "100%",
               height: 48,
-              borderColor: colors.black,
+              borderColor: globalcolors.black,
               borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
@@ -131,7 +126,7 @@ const Register = () => {
             }}>
               <TextInput
                 placeholder='Enter your password'
-                placeholderTextColor={colors.black}
+                placeholderTextColor={globalcolors.black}
                 secureTextEntry={isPasswordShown}
                 value={password}
                 onChangeText={txt => setPassword(txt)}
@@ -149,9 +144,9 @@ const Register = () => {
               >
                 {
                   isPasswordShown == true ? (
-                    <Ionicons name="eye" size={24} color={colors.black} />
+                    <Ionicons name="eye" size={24} color={globalcolors.black} />
                   ) : (
-                    <Ionicons name="eye-off" size={24} color={colors.black} />
+                    <Ionicons name="eye-off" size={24} color={globalcolors.black} />
                   )
                 }
 
@@ -166,7 +161,7 @@ const Register = () => {
             <View style={{
               width: "100%",
               height: 48,
-              borderColor: colors.black,
+              borderColor: globalcolors.black,
               borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
@@ -175,7 +170,7 @@ const Register = () => {
             }}>
               <TextInput
                 placeholder='Confirm your password'
-                placeholderTextColor={colors.black}
+                placeholderTextColor={globalcolors.black}
                 secureTextEntry={isPasswordShown}
                 value={confirmPassword}
                 onChangeText={txt => setconfirmPassword(txt)}
@@ -193,9 +188,9 @@ const Register = () => {
               >
                 {
                   isPasswordShown == true ? (
-                    <Ionicons name="eye" size={24} color={colors.black} />
+                    <Ionicons name="eye" size={24} color={globalcolors.black} />
                   ) : (
-                    <Ionicons name="eye-off" size={24} color={colors.black} />
+                    <Ionicons name="eye-off" size={24} color={globalcolors.black} />
                   )
                 }
 
@@ -204,7 +199,7 @@ const Register = () => {
           </View>
           {/* Error Message */}
           <View>
-            <Text style={GlobalStyles.error_message}>{message}</Text>
+            <Text style={globalStyles.error_message}>{message}</Text>
           </View>
 
           {/* Register button */}
@@ -227,13 +222,13 @@ const Register = () => {
             justifyContent: "center",
             marginVertical: 22
           }}>
-            <Text style={{ fontSize: 16, color: colors.black }}>Already have an account</Text>
+            <Text style={{ fontSize: 16, color: globalcolors.black }}>Already have an account</Text>
             <Pressable
-              onPress={() => navigation.replace("Login")}
+              onPress={() => navigation.replace("LoginScreen")}
             >
               <Text style={{
                 fontSize: 16,
-                color: colors.primary,
+                color: globalcolors.primary,
                 fontWeight: "bold",
                 marginLeft: 6
               }}>Login</Text>
@@ -246,7 +241,7 @@ const Register = () => {
   )
 }
 
-export default Register
+export default RegisterScreen
 
 const styles = StyleSheet.create({
   root: { flex: 1, padding: 10 },

@@ -1,4 +1,4 @@
-export const colors ={
+export const globalcolors ={
     gradientForm: '#A376F1',
     primary: '#7d5fff',
     white: '#FFFFFF',

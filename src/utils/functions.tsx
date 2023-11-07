@@ -3,8 +3,15 @@ import firebase from '@react-native-firebase/app';
 import { appConfig, firebaseConfig } from "./config";
 import messaging from '@react-native-firebase/messaging';
 
-export const GetPermissions=()=>{
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+export const consolelog = (msg:any) => {
+    if(appConfig.showConsoleLog){
+        console.log('ConsoleLog Function : ' + msg)
+    }
+}
+
+export const GetPermissions= ()=>{
+     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+     consolelog('Getting Permissions')
 }
 
 export const IntFirebase =async()=>{
