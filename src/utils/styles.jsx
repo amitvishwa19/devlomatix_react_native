@@ -1,7 +1,23 @@
 import { StyleSheet } from 'react-native'
-import { colors } from '../../utils/colors'
 
-const globalStyles = StyleSheet.create({
+import { constants,appcolors } from './constants'
+
+
+export const globalStyles = StyleSheet.create({
+    root:{flex:1,backgroundColor:'#1C2833'},
+    background_image_container:{flex:1, padding:10},
+    background_image_container_image:{opacity: 0.1},
+
+
+
+
+
+
+
+
+
+
+
     container: { justifyContent: 'center', flex: 1 },
     container_center: { justifyContent: 'center', flex: 1, alignItems: 'center' },
     BoldTitle: { fontSize: 40, fontWeight: 800 },
@@ -13,4 +29,3 @@ const globalStyles = StyleSheet.create({
     // page_background_container_image:{ opacity: 0.4, backgroundColor: colors.black}
 })
 
-export default globalStyles

@@ -1,42 +1,35 @@
-import { Button, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ToastAndroid } from 'react-native'
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { RootStackParamList } from '../../../App';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../../utils/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import CustomButton from '../../components/CustomButton';
-import { size } from '../../utils/size';
-import firestore from '@react-native-firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../App';
+import { LogUserDataToFirebaseDdatabase, consolelog } from '../utils/functions';
 import auth from '@react-native-firebase/auth';
-import globalStyles from '../../utils/styles';
-import { consolelog } from '../../functions/consoleLog';
+import { size } from '../utils/size';
+import { globalcolors } from '../utils/colors';
+import CustomButton from '../components/CustomButton';
+import { globalStyles } from '../utils/styles';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-type LoginScreenProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
-const Login = () => {
+type LoginScreenProp = NativeStackScreenProps<RootStackParamList, 'LoginScreen'>;
+const LoginScreen = ({ navigation }: LoginScreenProp) => {
 
-  const navigation = useNavigation<LoginScreenProp>();
   const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('')
-  const [clickable, setClickable] = useState(true)
+  const [message, setMessage] = useState('');
+  const [clickable, setClickable] = useState(true);
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    //getData();
-
+    GoogleSignin.configure({
+      webClientId: '670445737708-t45u8eiom6589aqv4cqvfiec0vlde7go.apps.googleusercontent.com',
+    });
+    
   }, [])
 
-  const getData = async () => {
-    try {
-      const data = await firestore().collection('test').doc('PFsd4mdR03dOaxzvA2CA').get();
-      console.log(data);
-    } catch (e) {
-      console.log('Getting data error- ' + e)
-    }
-  }
 
   const loginCLicked = async () => {
     try {
@@ -44,7 +37,7 @@ const Login = () => {
       const isUserLoggedin = await auth().signInWithEmailAndPassword(email, password)
         .then(() => {
           consolelog('Logged in Succesfully')
-          navigation.navigate('DrawerNavigator')
+          navigation.replace('MainScreen')
         })
         .catch(error => {
           if (error.code === 'auth/invalid-login') {
@@ -58,6 +51,47 @@ const Login = () => {
     }
   }
 
+  const googleSignin = async () => {
+    consolelog('Google Signin')
+    try {
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      const googleUser = await GoogleSignin.getCurrentUser();
+      await auth().signInWithCredential(googleCredential);
+      const user = auth().currentUser
+
+
+      console.log('currentUser: '+ user?.photoURL)
+
+      
+      //console.log(currentUser?.user)
+
+      //Logging data to database
+      await LogUserDataToFirebaseDdatabase(
+        user?.uid,
+        user?.displayName,
+        user?.email,
+        user?.photoURL
+        ).then(()=>{
+          navigation.replace('MainScreen')
+        });
+
+    } catch (error) {
+      consolelog('Error while google signin :' + error)
+    }
+  }
+
+  const googleSignout = async()=>{
+    try {
+      await GoogleSignin.signOut()
+    } catch (error) {
+      consolelog('Error while logging out from Google : ' + error)
+    }
+  }
+
   return (
     <SafeAreaView style={styles.root}>
       <ScrollView>
@@ -68,14 +102,14 @@ const Login = () => {
               fontSize: 22,
               fontWeight: 'bold',
               marginVertical: 12,
-              color: colors.black
+              color: globalcolors.black
             }}>
               Hi Welcome Back ! 👋
             </Text>
 
             <Text style={{
               fontSize: 16,
-              color: colors.black
+              color: globalcolors.black
             }}>Hello again you have been missed!</Text>
           </View>
 
@@ -87,7 +121,7 @@ const Login = () => {
             <View style={{
               width: "100%",
               height: 48,
-              borderColor: colors.black,
+              borderColor: globalcolors.black,
               borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
@@ -96,7 +130,7 @@ const Login = () => {
             }}>
               <TextInput
                 placeholder='Enter your email address'
-                placeholderTextColor={colors.black}
+                placeholderTextColor={globalcolors.black}
                 keyboardType='email-address'
                 value={email}
                 onChangeText={txt => setEmail(txt)}
@@ -114,7 +148,7 @@ const Login = () => {
             <View style={{
               width: "100%",
               height: 48,
-              borderColor: colors.black,
+              borderColor: globalcolors.black,
               borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
@@ -123,7 +157,7 @@ const Login = () => {
             }}>
               <TextInput
                 placeholder='Enter your password'
-                placeholderTextColor={colors.black}
+                placeholderTextColor={globalcolors.black}
                 value={password}
                 onChangeText={txt => setPassword(txt)}
                 secureTextEntry={isPasswordShown}
@@ -141,9 +175,9 @@ const Login = () => {
               >
                 {
                   isPasswordShown == true ? (
-                    <Ionicons name="eye" size={24} color={colors.black} />
+                    <Ionicons name="eye" size={24} color={globalcolors.black} />
                   ) : (
-                    <Ionicons name="eye-off" size={24} color={colors.black} />
+                    <Ionicons name="eye-off" size={24} color={globalcolors.black} />
                   )
                 }
 
@@ -174,7 +208,7 @@ const Login = () => {
               style={{
                 flex: 1,
                 height: 1,
-                backgroundColor: colors.gray,
+                backgroundColor: globalcolors.gray,
                 marginHorizontal: 10
               }}
             />
@@ -183,7 +217,7 @@ const Login = () => {
               style={{
                 flex: 1,
                 height: 1,
-                backgroundColor: colors.gray,
+                backgroundColor: globalcolors.gray,
                 marginHorizontal: 10
               }}
             />
@@ -202,13 +236,13 @@ const Login = () => {
                 flexDirection: 'row',
                 height: size.buttonHeight,
                 borderWidth: 1,
-                borderColor: colors.gray,
+                borderColor: globalcolors.gray,
                 marginRight: 4,
                 borderRadius: size.buttonBorderRadius
               }}
             >
               <Image
-                source={require("../../assets/images/facebook.png")}
+                source={require("../assets/images/facebook.png")}
                 style={{
                   height: 25,
                   width: 25,
@@ -221,7 +255,7 @@ const Login = () => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => console.log("Pressed")}
+              onPress={googleSignin}
               style={{
                 flex: 1,
                 alignItems: 'center',
@@ -229,13 +263,13 @@ const Login = () => {
                 flexDirection: 'row',
                 height: size.buttonHeight,
                 borderWidth: 1,
-                borderColor: colors.gray,
+                borderColor: globalcolors.gray,
                 marginRight: 4,
                 borderRadius: size.buttonBorderRadius
               }}
             >
               <Image
-                source={require("../../assets/images/google.png")}
+                source={require("../assets/images/google.png")}
                 style={{
                   height: 25,
                   width: 25,
@@ -253,13 +287,13 @@ const Login = () => {
             justifyContent: "center",
             marginVertical: 22
           }}>
-            <Text style={{ fontSize: 16, color: colors.black }}>Don't have an account ? </Text>
+            <Text style={{ fontSize: 16, color: globalcolors.black }}>Don't have an account ? </Text>
             <Pressable
-              onPress={() => navigation.replace("Register")}
+              onPress={() => { navigation.replace('RegisterScreen') }}
             >
               <Text style={{
                 fontSize: 16,
-                color: colors.primary,
+                color: globalcolors.primary,
                 fontWeight: "bold",
                 marginLeft: 6
               }}>Register</Text>
@@ -271,7 +305,7 @@ const Login = () => {
   )
 }
 
-export default Login
+export default LoginScreen
 
 const styles = StyleSheet.create({
   root: { flex: 1, padding: 10 },

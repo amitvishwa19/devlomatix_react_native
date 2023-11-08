@@ -1,4 +1,4 @@
-export const colors ={
+export const globalcolors ={
     gradientForm: '#A376F1',
     primary: '#7d5fff',
     white: '#FFFFFF',
@@ -9,7 +9,8 @@ export const colors ={
     gray: '#666666',
     grayLight: '#ccc',
     black: '#0a0a0a',
-    darkMode:'#191970 '
+    darkMode:'#191970',
+    primaryColor:'#090B34' 
   };
 
   
