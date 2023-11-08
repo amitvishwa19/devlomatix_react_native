@@ -2,7 +2,7 @@ import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput
 import React, { useEffect, useState } from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
-import { consolelog } from '../utils/functions';
+import { LogUserDataToFirebaseDdatabase, consolelog } from '../utils/functions';
 import auth from '@react-native-firebase/auth';
 import { size } from '../utils/size';
 import { globalcolors } from '../utils/colors';
@@ -27,6 +27,7 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     GoogleSignin.configure({
       webClientId: '670445737708-t45u8eiom6589aqv4cqvfiec0vlde7go.apps.googleusercontent.com',
     });
+    
   }, [])
 
 
@@ -55,20 +56,39 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     try {
       // Check if your device supports Google Play
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-
-      // Get the users ID token
       const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      const googleUser = await GoogleSignin.getCurrentUser();
+      await auth().signInWithCredential(googleCredential);
+      const user = auth().currentUser
+
+
+      console.log('currentUser: '+ user?.photoURL)
 
       
+      //console.log(currentUser?.user)
 
-      // Create a Google credential with the token
-      //const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      //console.log(googleCredential)
+      //Logging data to database
+      await LogUserDataToFirebaseDdatabase(
+        user?.uid,
+        user?.displayName,
+        user?.email,
+        user?.photoURL
+        ).then(()=>{
+          navigation.replace('MainScreen')
+        });
 
-      // Sign-in the user with the credential
-      //const firebaseUserCredential = await auth().currentUser.linkWithCredential(googleCredential);
     } catch (error) {
       consolelog('Error while google signin :' + error)
+    }
+  }
+
+  const googleSignout = async()=>{
+    try {
+      await GoogleSignin.signOut()
+    } catch (error) {
+      consolelog('Error while logging out from Google : ' + error)
     }
   }
 

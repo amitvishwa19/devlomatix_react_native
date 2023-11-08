@@ -1,15 +1,22 @@
 
 
 
-const constants ={
-    pageBackgroundOpacity:0.1
+const constants = {
+    pageBackgroundOpacity: 0.1
 }
-const colors={
-    primaryColor:'#090B34'
+const appcolors = {
+    primaryColor: '#1C2833',
+    darkBackgroundColor: '#1C2833'
 
 }
 
-export{
+const appConfig = {
+    showDrawer: true,
+    showConsoleLog: true
+}
+
+export {
     constants,
-    colors
+    appcolors,
+    appConfig
 }

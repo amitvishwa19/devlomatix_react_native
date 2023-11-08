@@ -2,9 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { SplashScreen, LoginScreen, RegisterScreen, MainScreen, HomeScreen, ProfileScreen, NotificationScreen, SettingScreen } from './src/screens';
-import { CloudMessaging, consolelog } from './src/utils/functions';
-import messaging from '@react-native-firebase/messaging';
-import { Alert } from 'react-native';
+
 
 
 
@@ -24,20 +22,9 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const App = () => {
 
   useEffect(() => {
-    CloudMessaging();
+  
   }, [])
-
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-    }
-  }
-
+  
 
   return (
 
@@ -60,3 +47,7 @@ const App = () => {
 
 
 export default App;
+function conslolelog(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+

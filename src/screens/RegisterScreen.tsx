@@ -10,11 +10,12 @@ import { strings } from '../utils/strings';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { globalStyles } from '../utils/styles';
 import CustomButton from '../components/CustomButton';
+import { LogUserDataToFirebaseDdatabase, consolelog } from '../utils/functions';
 
 type RegisterScreenProp = NativeStackScreenProps<RootStackParamList, 'RegisterScreen'>;
-const RegisterScreen = ({navigation}:RegisterScreenProp) => {
+const RegisterScreen = ({ navigation }: RegisterScreenProp) => {
 
- 
+
   const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState('');
@@ -26,35 +27,24 @@ const RegisterScreen = ({navigation}:RegisterScreenProp) => {
   const registerClick = async () => {
     const deviceToken = await messaging().getToken()
     try {
-      const user = await auth().createUserWithEmailAndPassword(email, password).then(() => {
-
-        firestore().collection('users').doc(auth().currentUser?.uid).set({
-          uid: auth().currentUser?.uid,
-          email: email,
-          password: password,
-          deviceToken:deviceToken
-        })
-          .then(() => {
-            auth().signOut().then(() => {
-              auth().currentUser?.sendEmailVerification()
-              ToastAndroid.showWithGravity('Account created successfully', ToastAndroid.LONG, ToastAndroid.BOTTOM);
-              navigation.replace('LoginScreen')
-            })
-          });
-      })
-        .catch(error => {
-          if (error.code === 'auth/email-already-in-use') {
-            setMessage(error.code)
-          }
-
-          if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
-            setMessage(error.code)
-          }
+      await auth().createUserWithEmailAndPassword(email, password).then(() => {
+        const user = auth().currentUser;
+        
+        //Logging data to database
+        LogUserDataToFirebaseDdatabase(
+          user?.uid,
+          user?.displayName,
+          user?.email,
+          user?.photoURL
+        ).then(() => {
+          auth().signOut().then(()=>{
+            ToastAndroid.showWithGravity('Account created successfully', ToastAndroid.LONG, ToastAndroid.BOTTOM);
+            navigation.replace('LoginScreen')
+          })
         });
-
+      })
     } catch (error) {
-
+      consolelog('Error while registring user : ' + error)
     }
   }
 

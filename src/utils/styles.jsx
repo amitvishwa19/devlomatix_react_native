@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native'
-import { globalcolors } from './colors'
+
+import { constants,appcolors } from './constants'
 
 
 export const globalStyles = StyleSheet.create({
-    root:{flex:1,backgroundColor:globalcolors.primaryColor},
+    root:{flex:1,backgroundColor:'#1C2833'},
     background_image_container:{flex:1, padding:10},
     background_image_container_image:{opacity: 0.1},
 

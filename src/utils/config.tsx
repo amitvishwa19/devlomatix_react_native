@@ -13,3 +13,13 @@ export const firebaseConfig = {
     measurementId: "G-QEL0EDSYM0",
     databaseURL: ''
 };
+
+export const firebaseGoogleConfig = {
+    clientId:'670445737708-t45u8eiom6589aqv4cqvfiec0vlde7go.apps.googleusercontent.com'
+}
+
+// export const nconfig = [
+//     test:{
+//         1:''
+//     }
+// ]
