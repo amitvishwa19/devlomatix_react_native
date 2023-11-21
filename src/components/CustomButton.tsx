@@ -3,7 +3,7 @@ import React from 'react'
 import { size } from '../utils/size';
 
 
-type CustomButtonProps = {
+type props = {
     title:string,
     backgroundColor:string,
     color:string,
@@ -11,7 +11,7 @@ type CustomButtonProps = {
     onClick:any
     width:string
   };
-const CustomBUtton = ({title, backgroundColor, color, borderColor,onClick,width}:CustomButtonProps) => {
+const CustomBUtton = ({title, backgroundColor, color, borderColor,onClick,width}:props) => {
   return (
     <TouchableOpacity style={[{backgroundColor:backgroundColor, borderColor: borderColor ,width:width} ,styles.button]} onPress={onClick}>
       <Text style={[{color:color}, styles.button_text]}>{title}</Text>

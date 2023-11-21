@@ -1,18 +1,31 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
-import { LogUserDataToFirebaseDdatabase, consolelog } from '../utils/functions';
-import auth from '@react-native-firebase/auth';
-import { size } from '../utils/size';
-import { globalcolors } from '../utils/colors';
-import CustomButton from '../components/CustomButton';
-import { globalStyles } from '../utils/styles';
+import { RootStackParamList } from '../../../App';
+import { LogUserDataToFirebase, consolelog } from '../../utils/functions';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { size } from '../../utils/size';
+import { globalcolors } from '../../utils/colors';
+import CustomButton from '../../components/CustomButton';
+import { globalStyles } from '../../utils/styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import PageBackground from '../../components/PageBackground';
+import { appConfig } from '../../utils/config';
+import messaging from '@react-native-firebase/messaging';
+import Toast from 'react-native-simple-toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { strings } from '../../utils/constants';
+import { UserDataType } from '../../utils/types';
+import { useRoute } from '@react-navigation/native';
 
 
+
+
+const { height: height, width: width } = Dimensions.get('window');
 type LoginScreenProp = NativeStackScreenProps<RootStackParamList, 'LoginScreen'>;
+
+
 const LoginScreen = ({ navigation }: LoginScreenProp) => {
 
   const [isPasswordShown, setIsPasswordShown] = useState(true);
@@ -20,30 +33,45 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [clickable, setClickable] = useState(true);
-  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const [loggedin, setLoggedin] = useState()
+
 
   useEffect(() => {
+    googleConfiguration();
+  }, [])
+
+  const googleConfiguration = () => {
     GoogleSignin.configure({
       webClientId: '670445737708-t45u8eiom6589aqv4cqvfiec0vlde7go.apps.googleusercontent.com',
     });
-    
-  }, [])
+  }
 
 
   const loginCLicked = async () => {
     try {
 
-      const isUserLoggedin = await auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
+
+      if (email == '' && password == '') {
+        Toast.show('Please enter Email and Password', Toast.LONG)
+      } else {
+        setLoading(true)
+        const userLogin = await auth().signInWithEmailAndPassword(email, password).then(() => {
           consolelog('Logged in Succesfully')
+          setLoading(false)
           navigation.replace('MainScreen')
-        })
-        .catch(error => {
+        }).catch(error => {
+          consolelog(error.code)
+          setLoading(false)
+          if (error.code === 'auth/invalid-email') {
+            setMessage('Invalid email id');
+          }
           if (error.code === 'auth/invalid-login') {
             setMessage('Invalid Login credentials or Account not found');
           }
         })
+      }
+
 
 
     } catch (e) {
@@ -51,50 +79,76 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
     }
   }
 
-  const googleSignin = async () => {
-    consolelog('Google Signin')
+  const GoogleSigninCLick = async () => {
     try {
-      // Check if your device supports Google Play
+      consolelog('Google Signin')
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      const { idToken } = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const { idToken } = await GoogleSignin.signIn()
+      await GoogleSignin.signOut().then(() => {
+        setLoading(true)
+        googleLogin(idToken).then(() => {
 
-      const googleUser = await GoogleSignin.getCurrentUser();
-      await auth().signInWithCredential(googleCredential);
-      const user = auth().currentUser
-
-
-      console.log('currentUser: '+ user?.photoURL)
-
-      
-      //console.log(currentUser?.user)
-
-      //Logging data to database
-      await LogUserDataToFirebaseDdatabase(
-        user?.uid,
-        user?.displayName,
-        user?.email,
-        user?.photoURL
-        ).then(()=>{
-          navigation.replace('MainScreen')
-        });
+        }).catch((error) => {
+          console.log('googleLogin:', error)
+        })
+      })
 
     } catch (error) {
-      consolelog('Error while google signin :' + error)
+      console.log('Error while google signin :', error)
     }
   }
 
-  const googleSignout = async()=>{
-    try {
-      await GoogleSignin.signOut()
-    } catch (error) {
-      consolelog('Error while logging out from Google : ' + error)
+  const googleLogin = async (idToken: any) => {
+    const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
+    const fbgl = await auth().signInWithCredential(googleCredential);
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber();
+  }
+
+  function onAuthStateChanged(user: any) {
+    const deviceToken =  messaging().getToken()
+    setLoggedin(user)
+
+    if (user) {
+      logUserData(user)
     }
+
+  }
+
+  const logUserData = async(user:any)=>{
+    const deviceToken =  await messaging().getToken()
+    const userData = {
+      uid: user.uid,
+      name: user.displayName,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      avatar: user.photoURL,
+      dnd: false,
+      loggedIn: true,
+      deviceToken:deviceToken
+    }
+
+    LogUserDataToFirebase(userData)
+        .then(() => {
+          AsyncStorage.setItem('user', JSON.stringify(userData))
+          AsyncStorage.setItem('uid', userData.uid)
+          AsyncStorage.setItem('avatar', userData.avatar)
+          setLoading(false)
+          navigation.replace('MainScreen')
+        }).catch((e) => {
+          setLoading(false);
+          Toast.show('Oops something went wrong, please try again later', 2000)
+          navigation.replace('LoginScreen')
+        })
+
   }
 
   return (
     <SafeAreaView style={styles.root}>
-      <ScrollView>
+      <View style={{ padding: 10 }}>
+
+        <PageBackground />
+
         <View >
 
           <View style={{ marginVertical: 22 }}>
@@ -102,14 +156,14 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
               fontSize: 22,
               fontWeight: 'bold',
               marginVertical: 12,
-              color: globalcolors.black
+              color: '#fff'
             }}>
               Hi Welcome Back ! 👋
             </Text>
 
             <Text style={{
               fontSize: 16,
-              color: globalcolors.black
+              color: '#fff'
             }}>Hello again you have been missed!</Text>
           </View>
 
@@ -121,7 +175,7 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
             <View style={{
               width: "100%",
               height: 48,
-              borderColor: globalcolors.black,
+              borderColor: '#fff',
               borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
@@ -130,12 +184,13 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
             }}>
               <TextInput
                 placeholder='Enter your email address'
-                placeholderTextColor={globalcolors.black}
+                placeholderTextColor='#fff'
                 keyboardType='email-address'
                 value={email}
                 onChangeText={txt => setEmail(txt)}
                 style={{
-                  width: "100%"
+                  width: "100%",
+                  color: '#fff'
                 }}
               />
             </View>
@@ -148,7 +203,7 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
             <View style={{
               width: "100%",
               height: 48,
-              borderColor: globalcolors.black,
+              borderColor: '#fff',
               borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
@@ -157,12 +212,13 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
             }}>
               <TextInput
                 placeholder='Enter your password'
-                placeholderTextColor={globalcolors.black}
+                placeholderTextColor='#fff'
                 value={password}
                 onChangeText={txt => setPassword(txt)}
                 secureTextEntry={isPasswordShown}
                 style={{
-                  width: "100%"
+                  width: "100%",
+                  color: '#fff'
                 }}
               />
 
@@ -175,9 +231,9 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
               >
                 {
                   isPasswordShown == true ? (
-                    <Ionicons name="eye" size={24} color={globalcolors.black} />
+                    <Ionicons name="eye" size={24} color='#fff' />
                   ) : (
-                    <Ionicons name="eye-off" size={24} color={globalcolors.black} />
+                    <Ionicons name="eye-off" size={24} color='#fff' />
                   )
                 }
 
@@ -194,9 +250,9 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
           <View>
             <CustomButton
               title='Login'
-              backgroundColor='green'
+              backgroundColor={appConfig.colors.primaryColor}
               color='#fff'
-              borderColor='transparent'
+              borderColor='#fff'
               width='100%'
               onClick={loginCLicked}
 
@@ -227,8 +283,10 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
             flexDirection: 'row',
             justifyContent: 'center'
           }}>
+
+
             <TouchableOpacity
-              onPress={() => console.log("Pressed")}
+              onPress={GoogleSigninCLick}
               style={{
                 flex: 1,
                 alignItems: 'center',
@@ -236,13 +294,13 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
                 flexDirection: 'row',
                 height: size.buttonHeight,
                 borderWidth: 1,
-                borderColor: globalcolors.gray,
+                borderColor: '#fff',
                 marginRight: 4,
                 borderRadius: size.buttonBorderRadius
               }}
             >
               <Image
-                source={require("../assets/images/facebook.png")}
+                source={require("../../assets/images/google.png")}
                 style={{
                   height: 25,
                   width: 25,
@@ -251,34 +309,7 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
                 resizeMode='contain'
               />
 
-              <Text>Facebook</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={googleSignin}
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                height: size.buttonHeight,
-                borderWidth: 1,
-                borderColor: globalcolors.gray,
-                marginRight: 4,
-                borderRadius: size.buttonBorderRadius
-              }}
-            >
-              <Image
-                source={require("../assets/images/google.png")}
-                style={{
-                  height: 25,
-                  width: 25,
-                  marginRight: 8
-                }}
-                resizeMode='contain'
-              />
-
-              <Text>Google</Text>
+              <Text style={{ color: '#fff' }}>Google</Text>
             </TouchableOpacity>
           </View>
 
@@ -287,20 +318,26 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
             justifyContent: "center",
             marginVertical: 22
           }}>
-            <Text style={{ fontSize: 16, color: globalcolors.black }}>Don't have an account ? </Text>
+            <Text style={{ fontSize: 16, color: '#fff' }}>Don't have an account ? </Text>
             <Pressable
               onPress={() => { navigation.replace('RegisterScreen') }}
             >
               <Text style={{
                 fontSize: 16,
-                color: globalcolors.primary,
+                color: 'orange',
                 fontWeight: "bold",
                 marginLeft: 6
-              }}>Register</Text>
+              }}>Create Account</Text>
             </Pressable>
           </View>
         </View>
-      </ScrollView>
+
+      </View>
+      {
+        loading ? <View style={styles.loader}>
+          <ActivityIndicator color={"#fff"} size={60} />
+        </View> : null
+      }
     </SafeAreaView>
   )
 }
@@ -308,6 +345,9 @@ const LoginScreen = ({ navigation }: LoginScreenProp) => {
 export default LoginScreen
 
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 10 },
-  feild_title: { fontSize: 16, fontWeight: '600', marginVertical: 8 },
+  root: { flex: 1, backgroundColor: appConfig.colors.primaryColor },
+  feild_title: { fontSize: 16, fontWeight: '600', marginVertical: 8, color: '#fff' },
+  loader: { height: height, width: width, backgroundColor: '#000', opacity: 0.4, position: 'absolute', justifyContent: 'center', alignItems: 'center' }
 })
+
+

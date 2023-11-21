@@ -1,22 +1,29 @@
-
-
-
-const constants = {
-    pageBackgroundOpacity: 0.1
-}
+// const constants = {
+//     pageBackgroundOpacity: 0.1
+// }
 const appcolors = {
-    primaryColor: '#1C2833',
-    darkBackgroundColor: '#1C2833'
+    primaryColor: '#090B34',
+    darkBackgroundColor: '#090B34'
 
 }
 
 const appConfig = {
     showDrawer: true,
-    showConsoleLog: true
+    showConsoleLog: true,
+    fancyBottomNav:true
+}
+
+const strings = {
+    appName : 'Devlomatix',
+    appLogoPath:require('../assets/images/devlomatix_logo.png'),
+    splashBackgroundImage:require('../assets/images/page_background.jpg'),
+    pageBackground:require('../assets/images/background.jpg'),
+    userImage:require('../assets/images/user.jpg'),
 }
 
 export {
-    constants,
+    //constants,
     appcolors,
-    appConfig
+    appConfig,
+    strings
 }

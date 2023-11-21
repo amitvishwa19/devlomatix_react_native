@@ -1,17 +1,18 @@
-import { ImageBackground, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import { strings } from '../utils/strings';
-import { globalStyles } from '../utils/styles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
-import { FirebaseEmailLoginCheck, FirebaseGoogleLoginCheck, SignoutFirebaseEmailLogin, SignoutFirebaseGoogleLogin } from '../utils/functions';
+import { RootStackParamList } from '../../../App';
+import { FirebaseEmailLoginCheck, FirebaseGoogleLoginCheck, SignoutFirebaseEmailLogin, SignoutFirebaseGoogleLogin } from '../../utils/functions';
+import { globalStyles } from '../../utils/styles';
 import Dialog from "react-native-dialog";
-import PageBackground from '../components/PageBackground';
+import PageBackground from '../../components/PageBackground';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import { appConfig } from '../../utils/config';
 
 
-type SettingScreenProp = NativeStackScreenProps<RootStackParamList, 'SettingScreen'>;
-const SettingScreen = ({ navigation }: SettingScreenProp) => {
+type SettingsScreenProp = NativeStackScreenProps<RootStackParamList, 'SettingsScreen'>;
+const SettingsScreen = ({navigation}:any) => {
+
   const [visible, setVisible] = useState(false);
 
 
@@ -38,6 +39,7 @@ const SettingScreen = ({ navigation }: SettingScreenProp) => {
 
   }
 
+  
   return (
     <View style={[globalStyles.page_container]} >
       
@@ -67,7 +69,7 @@ const SettingScreen = ({ navigation }: SettingScreenProp) => {
           <View style={{ padding: 10 }}>
             <View style={styles.page_blocks_item}>
               <Text style={styles.page_blocks_item_text}>Version</Text>
-              <Text style={styles.page_blocks_item_text}>1.1.0</Text>
+              <Text style={styles.page_blocks_item_text}>{appConfig.global.version}</Text>
             </View>
 
             <View style={styles.page_blocks_item}>
@@ -84,13 +86,10 @@ const SettingScreen = ({ navigation }: SettingScreenProp) => {
 
       </View>
     </View>
-
-
-
   )
 }
 
-export default SettingScreen
+export default SettingsScreen
 
 const styles = StyleSheet.create({
   page_title_area: { marginVertical: 10, marginBottom: 20 },
@@ -107,18 +106,3 @@ const styles = StyleSheet.create({
   page_blocks_item: { paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   page_blocks_item_text: { color: '#fff', fontWeight: '500' }
 })
-
-
-
-
-
-const BlockItem = () => {
-  return (
-    <View>
-      <Text>BlockItem</Text>
-    </View>
-  )
-}
-
-
-

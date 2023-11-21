@@ -6,6 +6,9 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { appConfig } from "./constants";
 import firestore from '@react-native-firebase/firestore';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import { UserDataType } from "./types";
+
 
 
 export const consolelog = (msg: any) => {
@@ -39,16 +42,24 @@ export const CloudMessaging = async () => {
 
 export const IntFirebase = async () => {
     consolelog('Firebaes initalized')
-    if (firebase.apps.length === 0) {
-        const firebaseApp = await firebase.initializeApp(firebaseConfig)
-        if (appConfig.showConsoleLog) { consolelog('Firebase App Initialized from Firebase Function') }
-    } else { const firebaseApp = await firebase.app() }
+    try {
+        if (firebase.apps.length === 0) {
+            const firebaseApp = await firebase.initializeApp(firebaseConfig)
+            if (appConfig.showConsoleLog) { consolelog('Firebase App Initialized from Firebase Function') }
+        } else { const firebaseApp = await firebase.app() }
+    } catch (error) {
+        console.log('Error while initializing Firebase: ' + error)
+    }
 }
 
 export const ForegroungFirebaeMsg = () => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-        Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
+    try {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            consolelog(JSON.stringify(remoteMessage.notification));
+        });
+    } catch (error) {
+        console.log('Error in catching foreground firebae cloud Msg: ' + error)
+    }
 }
 
 export const FCMDeviceToken = async () => {
@@ -60,8 +71,6 @@ export const CheckFirebaseEmailLogin = async () => {
     consolelog('WIll check Firebase Email Login Status')
     return CheckFirebaseEmailLogin;
 }
-
-
 
 export const FirebaseEmailLoginCheck = async () => {
 
@@ -93,7 +102,7 @@ export const FirebaseGoogleLoginCheck = async () => {
 
 export const SignoutFirebaseGoogleLogin = async () => {
     try {
-       await  GoogleSignin.configure({
+        await GoogleSignin.configure({
             webClientId: firebaseGoogleConfig.clientId,
         });
         const currentUser = await GoogleSignin.signOut()
@@ -103,15 +112,58 @@ export const SignoutFirebaseGoogleLogin = async () => {
     }
 }
 
-export const LogUserDataToFirebaseDdatabase = async(uid:any, name:any, email:any, avatar:any)=>{
+export const LogUserDataToFirebaseDdatabase = async (uid: any, name: any, email: any, avatar: any) => {
     const deviceToken = await messaging().getToken()
 
     await firestore().collection('users').doc(uid).set({
         uid: uid,
-        name:name,
+        name: name,
         email: email,
         avatar: avatar,
-        deviceToken:deviceToken,
-      })
+        deviceToken: deviceToken,
+    })
 
 }
+
+export const LogUserDataToFirebase = async (data:UserDataType) => {
+    try {
+        await firestore().collection('users').doc(data.uid).set(data)
+    } catch (error) {
+        consolelog(error)
+    }
+}
+
+export const IconColor = (data: string) => {
+    if (data == 'appointment') {
+        return '#3498DB'
+    } if (data == 'info') {
+        return 'yellow'
+    } if (data == 'reminder') {
+        return '#48C9B0'
+    }
+    return '#fff'
+}
+
+export const HapticFeedback = () => {
+    const options = {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false
+    };
+
+    ReactNativeHapticFeedback.trigger("impactMedium", options);
+
+}
+
+export const AddDataToFirebase = async (docname:string, data:object) => {
+    
+    try {
+        firestore().collection(docname).add(
+            data
+        ).then(() => {
+            consolelog('Data of ' + docname +' Added');
+        });
+    } catch (error) {
+        consolelog('Error while loading data in databsase: ' + error)
+    }
+}
+
