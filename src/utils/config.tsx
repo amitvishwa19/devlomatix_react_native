@@ -10,6 +10,7 @@ export const appConfig = {
     },
     'size': {
         fontSize: 12,
+        pressableTopIcon:40
     },
     'firebaseConfig': {
         apiKey: "AIzaSyA0ePkSco3jBKR8Gii2osux9778Ju3WnCo",

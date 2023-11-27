@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import { SplashScreen, LoginScreen, RegisterScreen, MainScreen, DoctorsList, HomeScreen, ChatWindow, DoctorDetailsScreen, UserDetailsScreen, ProfileScreen } from './src/screens';
+import { SplashScreen, LoginScreen, RegisterScreen, MainScreen, DoctorsList, HomeScreen, ChatWindow, DoctorDetailsScreen, UserDetailsScreen, ProfileScreen, ChatsListScreen, RecordsScreen, FeedsScreen, GuideScreen, AppointmentScreen, QuestionsScreen, ConsultationScreen, ReminderScreen, CareTeamScreen } from './src/screens';
 import { ForegroungFirebaeMsg } from './src/utils/functions';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DoctorDataType } from './src/utils/types';
@@ -14,14 +14,21 @@ export type RootStackParamList = {
   HomeScreen: undefined,
   ProfileScreen: undefined,
   NotificationScreen: undefined,
-  SettingScreen: undefined,
   SettingsScreen: undefined
   DocumentsScreen: undefined
   DoctorsList:undefined,
-  ChatWindow:{data:DoctorDataType, uid:any, avatar:any},
-  DoctorDetailsScreen:{image:string,uid:string}
+  ChatWindow:{data:DoctorDataType, uid:any, avatar:string,name:string,suid:any},
+  DoctorDetailsScreen:{image:any,uid:any}
   ChatsListScreen:any,
-  UserDetailsScreen:any
+  UserDetailsScreen:any,
+  RecordsScreen:any,
+  FeedsScreen:any,
+  GuideScreen:any,
+  AppointmentScreen:any,
+  QuestionsScreen:any,
+  ConsultationScreen:any,
+  ReminderScreen:any,
+  CareTeamScreen:any
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,13 +53,19 @@ const App = () => {
           <Stack.Screen name='MainScreen' component={MainScreen} options={{ headerShown: false }} />
           <Stack.Screen name='DoctorsList' component={DoctorsList} options={{ headerShown: false }} />
           <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='ChatsListScreen' component={ChatsListScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ChatWindow' component={ChatWindow} options={{ headerShown: false }} />
           <Stack.Screen name='UserDetailsScreen' component={UserDetailsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='DoctorDetailsScreen' component={DoctorDetailsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ProfileScreen' component={ProfileScreen} options={{ headerShown: false }} />
-          {/* <Stack.Screen name='DocumentsScreen' component={DocumentsScreen} options={{ headerShown: false }} /> */}
-          {/* <Stack.Screen name='NotificationScreen' component={NotificationScreen} options={{ headerShown: false }} /> */}
-          {/* <Stack.Screen name='SettingScreen' component={SettingScreen} options={{ headerShown: false }} /> */}
+          <Stack.Screen name='RecordsScreen' component={RecordsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='FeedsScreen' component={FeedsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='GuideScreen' component={GuideScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='AppointmentScreen' component={AppointmentScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='QuestionsScreen' component={QuestionsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='ConsultationScreen' component={ConsultationScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='ReminderScreen' component={ReminderScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='CareTeamScreen' component={CareTeamScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

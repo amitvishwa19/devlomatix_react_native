@@ -40,7 +40,7 @@ const HomeScreen = ({navigation}:props) => {
         <Appbar navigation={navigation} />
         <SearchBox />
         <Services  navigation={navigation}/>
-        <Features  />
+        <Features  navigation={navigation} />
        
         <TouchableOpacity onPress={onPress}  style={{width:100,backgroundColor:'#fff',alignItems:'center'}}>
           <Text>BS</Text>

@@ -2,71 +2,64 @@ import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native
 import React, { useCallback, useRef } from 'react'
 import { appConfig } from '../utils/config'
 import BottomSheet, { BottomSheetRefProps } from './BottomSheetBackup';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../App';
 
+
+type propsType = NativeStackScreenProps<RootStackParamList, 'HomeScreen'>;
 const Features = ({navigation}:any) => {
-    //const ref = useRef<BottomSheetRefProps>(null);
-
-    // const onPress = useCallback(() => {
-    //     const isActive = ref?.current?.isActive();
-    //     if (isActive) {
-    //       ref?.current?.scrollTo(0);
-    //     } else {
-    //       ref?.current?.scrollTo(-500);
-    //     }
-       
-    //   }, []);
-
-
+    
     return (
-        <View style={{marginVertical:10}}>
+        <View style={{marginVertical:5}}>
             <View style={{ backgroundColor: '#fff', position: 'absolute', height: '100%', width: '100%', borderRadius: 8, opacity: 0.2 }}></View>
             <View style={{padding:5}}>
-                <View style={{ flexDirection: 'row' ,justifyContent:'space-between',marginVertical:10}}>
+                <View style={{ flexDirection: 'row' ,justifyContent:'space-between',marginVertical:5}}>
                    
                      <Block title={appConfig.features.appointment.title} image={appConfig.features.appointment.image}
                         onClick={(() => {
-                            //onPress()
-                            console.log('featured clicked:' , appConfig.features.appointment.title)
+                            navigation.navigate('AppointmentScreen')
                         })}
                     />
                    
                     <Block title={appConfig.features.question.title} image={appConfig.features.question.image}
                         onClick={(() => {
-                            console.log('featured clicked:' , appConfig.features.question.title)
+                            navigation.navigate('QuestionsScreen')
                         })}
                     />
                      <Block title={appConfig.features.records.title} image={appConfig.features.records.image}
                         onClick={(() => {
-                            console.log('featured clicked:' , appConfig.features.records.title)
+                            navigation.navigate('RecordsScreen')
+                            
                         })}
                     />
                    
                     <Block title={appConfig.features.consultation.title} image={appConfig.features.consultation.image}
                         onClick={(() => {
-                            console.log('featured clicked:' , appConfig.features.consultation.title)
+                            navigation.navigate('ConsultationScreen')
                         })}
                     />
                 </View>
-                <View style={{ flexDirection: 'row' ,justifyContent:'space-between',marginVertical:10}}>
+                <View style={{ flexDirection: 'row' ,justifyContent:'space-between',marginVertical:5}}>
                     <Block title={appConfig.features.guide.title} image={appConfig.features.guide.image}
                         onClick={(() => {
-                            console.log('featured clicked:' , appConfig.features.guide.title)
+                            navigation.navigate('GuideScreen')
                         })}
                     />
                     <Block title={appConfig.features.feeds.title} image={appConfig.features.feeds.image}
                         onClick={(() => {
-                            console.log('featured clicked:' , appConfig.features.feeds.title)
+                            navigation.navigate('FeedsScreen')
                         })}
                     />
                      <Block title={appConfig.features.reminder.title} image={appConfig.features.reminder.image}
                         onClick={(() => {
-                            console.log('featured clicked:' , appConfig.features.reminder.title)
+                            navigation.navigate('ReminderScreen')
                         })}
                     />
                    
                     <Block title={appConfig.features.care.title} image={appConfig.features.care.image}
                         onClick={(() => {
-                            console.log('featured clicked:' , appConfig.features.care.title)
+                            navigation.navigate('CareTeamScreen')
                         })}
                     />
                 </View>

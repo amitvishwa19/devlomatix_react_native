@@ -26,7 +26,7 @@ const Appbar = ({ navigation }: any) => {
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
       <View style={{ flexDirection: 'row' }}>
         <View style={{ marginRight: 10 }}>
-          <Avatar image={user?.avatar} size={45} click={()=>{}}/>
+          <Avatar image={user?.avatar} size={40} click={()=>{navigation.navigate('ProfileScreen')}}/>
         </View>
         <View style={{ justifyContent: 'center' }}>
           <Text style={{ color: '#fff', fontSize: 14 }}>Hi, {user?.name}</Text>
@@ -37,7 +37,7 @@ const Appbar = ({ navigation }: any) => {
       <Pressable onPress={() => {
         navigation.navigate('MainScreen', { screen: 'Notifications' });
       }}>
-        <View style={{ height: 45, width: 45, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ height: appConfig.size.pressableTopIcon, width: appConfig.size.pressableTopIcon, justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ backgroundColor: '#fff', position: 'absolute', height: '100%', width: '100%', borderRadius: 8, opacity: 0.2 }}></View>
           <View style={{}}>
             <IonIcon name="notifications" size={24} color="#fff" />

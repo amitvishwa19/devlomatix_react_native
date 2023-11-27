@@ -36,5 +36,5 @@ const SearchBox = () => {
 export default SearchBox
 
 const styles = StyleSheet.create({
-    block: { marginVertical: 10 }
+    block: { marginVertical: 5 }
 })

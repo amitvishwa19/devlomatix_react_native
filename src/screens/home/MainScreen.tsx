@@ -76,7 +76,7 @@ const MainScreen = ({ navigation }: MainScreenProp) => {
             id: 2,
             name: 'Chats',
             screen: 'ChatScreen',
-            activeIcon: 'person',
+            activeIcon: 'chatbubbles',
             inactiveIcon: 'chatbubbles-outline',
             Component: ChatsListScreen
         },

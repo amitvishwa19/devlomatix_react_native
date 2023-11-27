@@ -5,15 +5,22 @@ import MainScreen from "./home/MainScreen";
 import NotificationScreen from "./home/NotificationScreen";
 import ProfileScreen from "./home/ProfileScreen";
 import RegisterScreen from "./auth/RegisterScreen";
-import SettingScreen from "./SettingScreen";
 import SettingsScreen from "./home/SettingsScreen";
 import SplashScreen from "./onboarding/SplashScreen";
 import ChatScreen from "./home/ChatsListScreen";
-import DoctorsList from "./DoctorsList";
-import ChatWindow from "./ChatWindow";
-import DoctorDetailsScreen from "./DoctorDetailsScreen";
+import DoctorsList from "./services/DoctorsList";
+import ChatWindow from "./chat/ChatWindow";
+import DoctorDetailsScreen from "./services/DoctorDetailsScreen";
 import UserDetailsScreen from "./UserDetailsScreen";
 import ChatsListScreen from "./home/ChatsListScreen";
+import RecordsScreen from "./features/RecordsScreen";
+import FeedsScreen from "./features/FeedsScreen";
+import GuideScreen from "./features/GuideScreen";
+import AppointmentScreen from "./features/AppointmentScreen";
+import QuestionsScreen from "./features/QuestionsScreen";
+import ConsultationScreen from "./features/ConsultationScreen";
+import ReminderScreen from "./features/ReminderScreen";
+import CareTeamScreen from "./features/CareTeamScreen";
 
 
 
@@ -25,7 +32,6 @@ export {
     HomeScreen,
     ProfileScreen,
     NotificationScreen,
-    SettingScreen,
     SettingsScreen,
     DocumentsScreen,
     ChatScreen,
@@ -33,5 +39,13 @@ export {
     ChatWindow,
     DoctorDetailsScreen,
     ChatsListScreen,
-    UserDetailsScreen
+    UserDetailsScreen,
+    RecordsScreen,
+    FeedsScreen,
+    GuideScreen,
+    AppointmentScreen,
+    QuestionsScreen,
+    ConsultationScreen,
+    ReminderScreen,
+    CareTeamScreen
 }

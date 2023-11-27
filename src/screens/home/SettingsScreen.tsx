@@ -58,7 +58,7 @@ const SettingsScreen = ({navigation}:any) => {
 
 
         <View style={styles.page_title_area}>
-          <Text style={styles.page_title_text}>Settings</Text>
+          <Text style={styles.page_title_text}>App Settings</Text>
         </View>
 
 
@@ -92,8 +92,8 @@ const SettingsScreen = ({navigation}:any) => {
 export default SettingsScreen
 
 const styles = StyleSheet.create({
-  page_title_area: { marginVertical: 10, marginBottom: 20 },
-  page_title_text: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
+  page_title_area: { marginVertical: 10, marginBottom: 18 },
+  page_title_text: { fontSize: 16, fontWeight: 'bold', color: '#fff' },
 
 
 

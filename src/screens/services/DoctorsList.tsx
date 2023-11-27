@@ -1,18 +1,18 @@
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { globalStyles } from '../utils/styles'
-import PageBackground from '../components/PageBackground'
-import { appConfig } from '../utils/config'
-import { HapticFeedback } from '../utils/functions'
+import { globalStyles } from '../../utils/styles'
+import PageBackground from '../../components/PageBackground'
+import { appConfig } from '../../utils/config'
+import { HapticFeedback } from '../../utils/functions'
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { DoctorDataType, UserDataType } from '../utils/types'
+import { DoctorDataType, UserDataType } from '../../utils/types'
 import { ScrollView } from 'react-native-gesture-handler'
-import Block from '../components/Block'
-import Avatar from '../components/Avatar'
-import Loader from '../components/Loader'
+import Block from '../../components/Block'
+import Avatar from '../../components/Avatar'
+import Loader from '../../components/Loader'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../App'
+import { RootStackParamList } from '../../../App'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
@@ -70,9 +70,6 @@ const DoctorsList = (props: propsType) => {
         setLoading(false);
     }
 
-
-    
-
     const getDoctorsList = async () => {
         setLoading(true)
 
@@ -121,14 +118,14 @@ const DoctorsList = (props: propsType) => {
                         HapticFeedback()
                         navigation.goBack();
                     }}>
-                        <View style={{ height: 45, width: 45, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ height: appConfig.size.pressableTopIcon, width:appConfig.size.pressableTopIcon, justifyContent: 'center', alignItems: 'center' }}>
                             <View style={{ backgroundColor: '#fff', position: 'absolute', height: '100%', width: '100%', borderRadius: 8, opacity: 0.2 }}></View>
                             <View style={{}}>
                                 <IonIcon name="arrow-back" size={24} color="#fff" />
                             </View>
                         </View>
                     </Pressable>
-                    <View style={{ height: 45, width: '70%', justifyContent: 'center', }}>
+                    <View style={{ height: appConfig.size.pressableTopIcon, width: '70%', justifyContent: 'center', }}>
                         <View style={{ backgroundColor: '#fff', position: 'absolute', height: '100%', width: '100%', borderRadius: 8, opacity: 0.2 }}></View>
                         <View style={{ flexDirection: 'row', paddingHorizontal: 10, justifyContent: 'space-between' }}>
                             <View style={{ backgroundColor: 'transparent', width: '90%' }}>
@@ -148,7 +145,7 @@ const DoctorsList = (props: propsType) => {
                         </View>
                     </View>
                     <Pressable onPress={() => { }}>
-                        <View style={{ height: 45, width: 45, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ height: appConfig.size.pressableTopIcon, width: appConfig.size.pressableTopIcon, justifyContent: 'center', alignItems: 'center' }}>
                             <View style={{ backgroundColor: '#fff', position: 'absolute', height: '100%', width: '100%', borderRadius: 8, opacity: 0.2 }}></View>
                             <View style={{}}>
                                 <IonIcon name="location-outline" size={24} color="#fff" />
@@ -188,7 +185,7 @@ const DoctorsList = (props: propsType) => {
                                                     </Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'column', width: '10%' }}>
-                                                    <Pressable style={styles.pressable} onPress={() => { navigation.replace('ChatWindow', { data: item, uid: uid, avatar: avatar }) }}>
+                                                    <Pressable style={styles.pressable} onPress={() => { navigation.replace('ChatWindow', { data: item, uid: uid, avatar: item.avatar , name: item.name, suid:item.uid}) }}>
                                                         <IonIcon name="chatbubble-ellipses-outline" size={20} color="#48C9B0" />
                                                     </Pressable >
                                                     <Pressable style={styles.pressable} onPress={() => { }}>

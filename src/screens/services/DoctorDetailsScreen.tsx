@@ -1,13 +1,13 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect } from 'react'
-import { globalStyles } from '../utils/styles'
-import PageBackground from '../components/PageBackground'
+import { globalStyles } from '../../utils/styles'
+import PageBackground from '../../components/PageBackground'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
+import { RootStackParamList } from '../../../App';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { HapticFeedback } from '../utils/functions';
-import { appConfig } from '../utils/config';
-import Avatar from '../components/Avatar';
+import { HapticFeedback } from '../../utils/functions';
+import { appConfig } from '../../utils/config';
+import Avatar from '../../components/Avatar';
 
 
 type propsType = NativeStackScreenProps<RootStackParamList, 'DoctorDetailsScreen'>;

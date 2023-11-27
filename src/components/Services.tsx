@@ -48,7 +48,7 @@ const Services = ({navigation}:any) => {
 export default Services
 
 const styles = StyleSheet.create({
-    block: { marginVertical: 10, },
+    block: { marginVertical: 5, },
     service: { height: 80, width: 80, justifyContent: 'center', alignItems: 'center', marginRight: 10, },
     title: { color: '#fff', marginTop: 5, fontSize: appConfig.size.fontSize }
 })

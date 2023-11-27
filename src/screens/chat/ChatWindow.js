@@ -1,15 +1,15 @@
 import { Pressable, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { globalStyles } from '../utils/styles'
-import PageBackground from '../components/PageBackground'
+import { globalStyles } from '../../utils/styles'
+import PageBackground from '../../components/PageBackground'
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { HapticFeedback } from '../utils/functions';
+import { HapticFeedback } from '../../utils/functions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
-import Avatar from '../components/Avatar';
+import { RootStackParamList } from '../../../App';
+import Avatar from '../../components/Avatar';
 import { Send, GiftedChat, InputToolbar, MessageContainer } from 'react-native-gifted-chat'
-import { appConfig } from '../utils/config';
+import { appConfig } from '../../utils/config';
 import firestore from '@react-native-firebase/firestore'
 import database from '@react-native-firebase/database';
 import Toast from 'react-native-simple-toast';
@@ -20,12 +20,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 //type propsType = NativeStackScreenProps<RootStackParamList, 'ChatWindow'>;
 const ChatWindow = (props) => {
   const { navigation, route } = props;
-  const { data, uid, avatar } = route.params
+  const { data, uid, avatar, name ,suid} = route.params
   const [messages, setMessages] = useState([]);
-  const docId = uid > data.uid ? data.uid + '-' + uid : uid + '-' + data.uid
+  const docId = uid > suid ? suid + '-' + uid : uid + '-' + suid
   const [user, setUser] = useState(null)
 
   useEffect(() => {
+    console.log(uid)
     getMessages();
     myData();
   }, [])
@@ -89,7 +90,7 @@ const ChatWindow = (props) => {
       reciver: data.uid,
       reciverName: data.name,
       reciverAvatar: data.avatar,
-      users: [user.uid,data.uid],
+      users: [user.uid, data.uid],
       lastMsgTime: moment().format(),
     }
 
@@ -99,9 +100,9 @@ const ChatWindow = (props) => {
       .collection('chatrooms')
       .doc(docId)
       .set(chatroomInfo)
-      .then(() => { 
-         firestore().collection('chatrooms').doc(docId).collection(uid).add(myMsg).then(()=>{})
-         firestore().collection('chatrooms').doc(docId).collection(data.uid).add(myMsg).then(()=>{})
+      .then(() => {
+        firestore().collection('chatrooms').doc(docId).collection(uid).add(myMsg).then(() => { })
+        firestore().collection('chatrooms').doc(docId).collection(data.uid).add(myMsg).then(() => { })
       })
 
     //Store in firestore
@@ -174,13 +175,13 @@ const ChatWindow = (props) => {
           </View>
 
           <View style={styles.userinfo}>
-            <Text style={styles.username}>{data.name}</Text>
+            <Text style={styles.username}>{name}</Text>
           </View>
 
 
           <View>
             <Pressable onPress={() => { }}>
-              <Avatar image={data.avatar} size={45} />
+              <Avatar image={avatar} size={45} />
             </Pressable>
           </View>
         </View>
